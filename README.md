@@ -5,15 +5,24 @@ To use this module you must have your Gimme Bar App's `client_id` &amp; `client_
 
     var gimmeOauth = require('./gimmeOauth');
     var requestToken;
+    var accessToken;
+    var username;
 
     gimmeOauth.getRequestToken(clientId, clientSecret, function(token){
         requestToken = token;
     });
     
-Once you have a user's `requestToken` you can go wild! For instance, you can grab a user's tags.
+Once you have a user's `request token` you must exchange it for an `access token`.
 
-    gimmeOauth.authenticateAndRetrieve('/tags', clientId, requestToken, function(data) {
-        console.log(data);
+    gimmeOauth.getAccessToken(clientId, requestToken, function(data) {
+        accessToken = data.access_token;
+        username = data.username;
+    });
+    
+Now that we have an `access token` we can go wild! For instance, we can grab a user's profile info.
+    
+    gimmeOauth.requestAPI('/user', 'GET', username, accessToken, function(data) {
+        console.log('user: ' + data);
     });
     
 Hope this helps!
