@@ -1,9 +1,10 @@
 var request = require('request');
+var qs = require('querystring');
 var baseUrl = 'https://gimmebar.com/api/v0';
 
 function getRequestToken(id, secret, callback) {
     var params = { client_id: id, client_secret: secret, type: 'app' };
-    var url = baseUrl + '/auth/reqtoken?' + buildQueryString(params);
+    var url = baseUrl + '/auth/reqtoken?' + qs.stringify(params);
 
     request.post(url, function (error, response, body) {
         if (error && callback) {
@@ -23,7 +24,7 @@ function getRequestToken(id, secret, callback) {
 
 function getAccessToken(id, requestToken, callback) {
     var params = { client_id: id, token: requestToken, response_type: 'code' };
-    var authorizeUrl = baseUrl + '/auth/exchange/request?' + buildQueryString(params);
+    var authorizeUrl = baseUrl + '/auth/exchange/request?' + qs.stringify(params);
 
     request.post(authorizeUrl, function (error, response, body) {
         if (error && callback) {
@@ -31,7 +32,7 @@ function getAccessToken(id, requestToken, callback) {
         }
         var object = JSON.parse(body);
         var params = { code: object.code, grant_type: 'authorization_code' };
-        var accessUrl = baseUrl + '/auth/exchange/authorization?' + buildQueryString(params);
+        var accessUrl = baseUrl + '/auth/exchange/authorization?' + qs.stringify(params);
 
         request.post(accessUrl, function(error, response, body){
             var object = JSON.parse(body);
@@ -73,16 +74,6 @@ function requestAPI(url, method, username, accessToken, callback) {
             }
         }
     });
-}
-
-function buildQueryString(params) {
-    var out = [];
-
-    for (var k in params) {
-        out.push(encodeURIComponent(k) + '=' + encodeURIComponent(params[k]));
-    }
-
-    return out.join('&');
 }
 
 exports.getRequestToken = getRequestToken;
