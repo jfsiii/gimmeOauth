@@ -29,15 +29,15 @@ function getAccessToken(id, requestToken, callback) {
             if (callback) {
                 callback.call(this, jsonified);
             }
-        })
+        });
     });
 }
 
 function requestAPI(url, method, username, accessToken, callback) {
     var auth    = 'Basic ' + new Buffer(username + ':' + accessToken).toString('base64');
-    var headers = { 
-        'Host': baseUrl, 
-        'Authorization': auth 
+    var headers = {
+        'Host': baseUrl,
+        'Authorization': auth
     };
     var jsonified;
 
