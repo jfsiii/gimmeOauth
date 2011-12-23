@@ -9,13 +9,13 @@ function getRequestToken(id, secret, callback) {
         if (error && callback) {
             callback(error, null);
         }
-        var jsonified = JSON.parse(body);
+        var object = JSON.parse(body);
 
         if (callback) {
-            if (jsonified.errors) {
-                callback(jsonified.errors, null)
+            if (object.errors) {
+                callback(object.errors, null)
             } else {
-                callback(null, jsonified);
+                callback(null, object);
             }
         }
     });
@@ -29,18 +29,18 @@ function getAccessToken(id, requestToken, callback) {
         if (error && callback) {
             callback(error, null);
         }
-        var jsonified = JSON.parse(body);
-        var params = { code: jsonified.code, grant_type: 'authorization_code' };
+        var object = JSON.parse(body);
+        var params = { code: object.code, grant_type: 'authorization_code' };
         var accessUrl = baseUrl + '/auth/exchange/authorization?' + buildQueryString(params);
 
         request.post(accessUrl, function(error, response, body){
-            var jsonified = JSON.parse(body);
+            var object = JSON.parse(body);
 
             if (callback) {
-                if (jsonified.errors) {
-                    callback(jsonified.errors, null)
+                if (object.errors) {
+                    callback(object.errors, null)
                 } else {
-                    callback(null, jsonified);
+                    callback(null, object);
                 }
             }
         });
@@ -63,13 +63,13 @@ function requestAPI(url, method, username, accessToken, callback) {
         if (error && callback) {
             callback(error, null);
         }
-        var jsonified = JSON.parse(body);
+        var object = JSON.parse(body);
 
         if (callback) {
-            if (jsonified.errors) {
-                callback(jsonified.errors, null)
+            if (object.errors) {
+                callback(object.errors, null)
             } else {
-                callback(null, jsonified);
+                callback(null, object);
             }
         }
     });
