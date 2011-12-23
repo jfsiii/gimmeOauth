@@ -2,10 +2,11 @@ var request = require('request');
 var baseUrl = 'https://gimmebar.com/api/v0';
 
 function getRequestToken(id, secret, callback) {
-    var url = baseUrl + '/auth/reqtoken?' + buildQueryString({ 'client_id': id, 'client_secret': secret, 'type': 'app' });
+    var params = { client_id: id, client_secret: secret, type: 'app' };
+    var url = baseUrl + '/auth/reqtoken?' + buildQueryString(params);
     var jsonified;
     
-    request.post(url, function(e, r, body){
+    request.post(url, function (e, r, body) {
         jsonified = JSON.parse(body);
         
         if (callback) {
@@ -15,13 +16,15 @@ function getRequestToken(id, secret, callback) {
 }
 
 function getAccessToken(id, requestToken, callback) {
-    var authorizeUrl = baseUrl + '/auth/exchange/request?' + buildQueryString({ 'client_id': id, 'token': requestToken, 'response_type': 'code' });
+    var params = { client_id: id, token: requestToken, response_type: 'code' };
+    var authorizeUrl = baseUrl + '/auth/exchange/request?' + buildQueryString(params);
     var accessUrl;
     var jsonified;
 
-    request.post(authorizeUrl, function(e, r, body){
+    request.post(authorizeUrl, function (e, r, body) {
         jsonified = JSON.parse(body);
-        accessUrl = baseUrl + '/auth/exchange/authorization?' + buildQueryString({ 'code': jsonified.code, 'grant_type': 'authorization_code' });
+        params = { code: jsonified.code, grant_type: 'authorization_code' };
+        accessUrl = baseUrl + '/auth/exchange/authorization?' + buildQueryString(params);
         
         request.post(accessUrl, function(e, r, body){
             jsonified = JSON.parse(body);
@@ -36,16 +39,17 @@ function getAccessToken(id, requestToken, callback) {
 function requestAPI(url, method, username, accessToken, callback) {
     var auth    = 'Basic ' + new Buffer(username + ':' + accessToken).toString('base64');
     var headers = {
-        'Host': baseUrl,
-        'Authorization': auth
+        Host: baseUrl,
+        Authorization: auth
+    };
+    var options = {
+        method: method,
+        url: baseUrl + url,
+        headers: headers
     };
     var jsonified;
 
-    request({
-        'method': method,
-        'url': baseUrl + url,
-        'headers': headers
-    }, function(e, r, body) {
+    request(options, function (e, r, body) {
         jsonified = JSON.parse(body);
         
         if (callback) {
