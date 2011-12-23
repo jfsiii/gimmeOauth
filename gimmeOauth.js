@@ -4,13 +4,12 @@ var baseUrl = 'https://gimmebar.com/api/v0';
 function getRequestToken(id, secret, callback) {
     var params = { client_id: id, client_secret: secret, type: 'app' };
     var url = baseUrl + '/auth/reqtoken?' + buildQueryString(params);
-    var jsonified;
 
     request.post(url, function (error, response, body) {
         if (error && callback) {
             callback(error, null);
         }
-        jsonified = JSON.parse(body);
+        var jsonified = JSON.parse(body);
 
         if (callback) {
             if (jsonified.errors) {
@@ -25,19 +24,17 @@ function getRequestToken(id, secret, callback) {
 function getAccessToken(id, requestToken, callback) {
     var params = { client_id: id, token: requestToken, response_type: 'code' };
     var authorizeUrl = baseUrl + '/auth/exchange/request?' + buildQueryString(params);
-    var accessUrl;
-    var jsonified;
 
     request.post(authorizeUrl, function (error, response, body) {
         if (error && callback) {
             callback(error, null);
         }
-        jsonified = JSON.parse(body);
-        params = { code: jsonified.code, grant_type: 'authorization_code' };
-        accessUrl = baseUrl + '/auth/exchange/authorization?' + buildQueryString(params);
+        var jsonified = JSON.parse(body);
+        var params = { code: jsonified.code, grant_type: 'authorization_code' };
+        var accessUrl = baseUrl + '/auth/exchange/authorization?' + buildQueryString(params);
 
         request.post(accessUrl, function(error, response, body){
-            jsonified = JSON.parse(body);
+            var jsonified = JSON.parse(body);
 
             if (callback) {
                 if (jsonified.errors) {
@@ -61,13 +58,12 @@ function requestAPI(url, method, username, accessToken, callback) {
         url: baseUrl + url,
         headers: headers
     };
-    var jsonified;
 
     request(options, function (error, response, body) {
         if (error && callback) {
             callback(error, null);
         }
-        jsonified = JSON.parse(body);
+        var jsonified = JSON.parse(body);
 
         if (callback) {
             if (jsonified.errors) {
