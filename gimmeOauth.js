@@ -36,7 +36,7 @@ function getAccessToken(id, requestToken, callback) {
         params = { code: jsonified.code, grant_type: 'authorization_code' };
         accessUrl = baseUrl + '/auth/exchange/authorization?' + buildQueryString(params);
 
-        request.post(accessUrl, function(e, r, body){
+        request.post(accessUrl, function(error, response, body){
             jsonified = JSON.parse(body);
 
             if (callback) {
