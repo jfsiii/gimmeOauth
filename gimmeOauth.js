@@ -13,7 +13,7 @@ function getRequestToken(id, secret, callback) {
 
         if (callback) {
             if (object.errors) {
-                callback(object.errors, null)
+                callback(object.errors, null);
             } else {
                 callback(null, object);
             }
@@ -38,7 +38,7 @@ function getAccessToken(id, requestToken, callback) {
 
             if (callback) {
                 if (object.errors) {
-                    callback(object.errors, null)
+                    callback(object.errors, null);
                 } else {
                     callback(null, object);
                 }
@@ -67,7 +67,7 @@ function requestAPI(url, method, username, accessToken, callback) {
 
         if (callback) {
             if (object.errors) {
-                callback(object.errors, null)
+                callback(object.errors, null);
             } else {
                 callback(null, object);
             }
