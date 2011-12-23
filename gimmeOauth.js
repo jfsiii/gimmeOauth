@@ -5,10 +5,10 @@ function getRequestToken(id, secret, callback) {
     var params = { client_id: id, client_secret: secret, type: 'app' };
     var url = baseUrl + '/auth/reqtoken?' + buildQueryString(params);
     var jsonified;
-    
+
     request.post(url, function (e, r, body) {
         jsonified = JSON.parse(body);
-        
+
         if (callback) {
             callback.call(this, jsonified.request_token);
         }
@@ -25,10 +25,10 @@ function getAccessToken(id, requestToken, callback) {
         jsonified = JSON.parse(body);
         params = { code: jsonified.code, grant_type: 'authorization_code' };
         accessUrl = baseUrl + '/auth/exchange/authorization?' + buildQueryString(params);
-        
+
         request.post(accessUrl, function(e, r, body){
             jsonified = JSON.parse(body);
-            
+
             if (callback) {
                 callback.call(this, jsonified);
             }
@@ -51,7 +51,7 @@ function requestAPI(url, method, username, accessToken, callback) {
 
     request(options, function (e, r, body) {
         jsonified = JSON.parse(body);
-        
+
         if (callback) {
             callback.call(this, jsonified);
         }
@@ -60,11 +60,11 @@ function requestAPI(url, method, username, accessToken, callback) {
 
 function buildQueryString(params) {
     var out = [];
-    
+
     for (var k in params) {
         out.push(encodeURIComponent(k) + '=' + encodeURIComponent(params[k]));
     }
-    
+
     return out.join('&');
 }
 
