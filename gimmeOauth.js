@@ -8,12 +8,16 @@ function getRequestToken(id, secret, callback) {
 
     request.post(url, function (error, response, body) {
         if (error && callback) {
-            callback(error);
+            callback(error, null);
         }
         jsonified = JSON.parse(body);
 
         if (callback) {
-            callback(jsonified.request_token);
+            if (jsonified.errors) {
+                callback(jsonified.errors, null)
+            } else {
+                callback(null, jsonified);
+            }
         }
     });
 }
@@ -26,7 +30,7 @@ function getAccessToken(id, requestToken, callback) {
 
     request.post(authorizeUrl, function (error, response, body) {
         if (error && callback) {
-            callback(error);
+            callback(error, null);
         }
         jsonified = JSON.parse(body);
         params = { code: jsonified.code, grant_type: 'authorization_code' };
@@ -36,7 +40,11 @@ function getAccessToken(id, requestToken, callback) {
             jsonified = JSON.parse(body);
 
             if (callback) {
-                callback(jsonified);
+                if (jsonified.errors) {
+                    callback(jsonified.errors, null)
+                } else {
+                    callback(null, jsonified);
+                }
             }
         });
     });
@@ -57,12 +65,16 @@ function requestAPI(url, method, username, accessToken, callback) {
 
     request(options, function (error, response, body) {
         if (error && callback) {
-            callback(error);
+            callback(error, null);
         }
         jsonified = JSON.parse(body);
 
         if (callback) {
-            callback(jsonified);
+            if (jsonified.errors) {
+                callback(jsonified.errors, null)
+            } else {
+                callback(null, jsonified);
+            }
         }
     });
 }
