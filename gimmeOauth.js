@@ -13,7 +13,7 @@ function getRequestToken(id, secret, callback) {
         jsonified = JSON.parse(body);
 
         if (callback) {
-            callback.call(this, jsonified.request_token);
+            callback(jsonified.request_token);
         }
     });
 }
@@ -36,7 +36,7 @@ function getAccessToken(id, requestToken, callback) {
             jsonified = JSON.parse(body);
 
             if (callback) {
-                callback.call(this, jsonified);
+                callback(jsonified);
             }
         });
     });
@@ -62,7 +62,7 @@ function requestAPI(url, method, username, accessToken, callback) {
         jsonified = JSON.parse(body);
 
         if (callback) {
-            callback.call(this, jsonified);
+            callback(jsonified);
         }
     });
 }
