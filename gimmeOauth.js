@@ -16,7 +16,7 @@ function getRequestToken(id, secret, callback) {
             if (object.errors) {
                 callback(object.errors, null);
             } else {
-                callback(null, object);
+                callback(null, object.request_token);
             }
         }
     });
