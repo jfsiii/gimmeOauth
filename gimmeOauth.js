@@ -1,48 +1,47 @@
 var request = require('request');
 var qs = require('querystring');
 var baseUrl = 'https://gimmebar.com/api/v0';
+request.defaults({json: true});
 
 function getRequestToken(id, secret, callback) {
     var params = { client_id: id, client_secret: secret, type: 'app' };
-    var url = baseUrl + '/auth/reqtoken?' + qs.stringify(params);
+    var url = baseUrl + '/auth/reqtoken';
+    var body = qs.stringify(params);
 
-    request.post(url, function (error, response, body) {
-        if (error && callback) {
-            callback(error, null);
-        }
+    request.post({url: url, body: body}, function (error, response, body) {
         var object = JSON.parse(body);
-
+        error = error || object.errors;
         if (callback) {
-            if (object.errors) {
-                callback(object.errors, null);
-            } else {
+            return error ?
+                callback(error, null) :
                 callback(null, object.request_token);
-            }
         }
     });
 }
 
 function getAccessToken(id, requestToken, callback) {
     var params = { client_id: id, token: requestToken, response_type: 'code' };
-    var authorizeUrl = baseUrl + '/auth/exchange/request?' + qs.stringify(params);
+    var authorizeUrl = baseUrl + '/auth/exchange/request';
+    var body = qs.stringify(params);
 
-    request.post(authorizeUrl, function (error, response, body) {
-        if (error && callback) {
-            callback(error, null);
-        }
+    request.post({url: authorizeUrl, body: body}, function (error, response, body) {
         var object = JSON.parse(body);
+        error = error || object.errors;
+        if (callback && error) {
+            return callback(error, null);
+        }
+
         var params = { code: object.code, grant_type: 'authorization_code' };
-        var accessUrl = baseUrl + '/auth/exchange/authorization?' + qs.stringify(params);
+        var accessUrl = baseUrl + '/auth/exchange/authorization';
+        var body = qs.stringify(params);
 
-        request.post(accessUrl, function(error, response, body){
+        request.post({url: accessUrl, body: body}, function(error, response, body){
             var object = JSON.parse(body);
-
+            error = error || object.errors;
             if (callback) {
-                if (object.errors) {
-                    callback(object.errors, null);
-                } else {
+                return error ?
+                    callback(error, null) :
                     callback(null, object);
-                }
             }
         });
     });
@@ -61,17 +60,12 @@ function requestAPI(url, method, username, accessToken, callback) {
     };
 
     request(options, function (error, response, body) {
-        if (error && callback) {
-            callback(error, null);
-        }
         var object = JSON.parse(body);
-
+        error = error || object.errors;
         if (callback) {
-            if (object.errors) {
-                callback(object.errors, null);
-            } else {
+            return error ?
+                callback(error, null) :
                 callback(null, object);
-            }
         }
     });
 }
